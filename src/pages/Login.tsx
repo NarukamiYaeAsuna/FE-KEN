@@ -23,8 +23,10 @@ const Login: React.FC = () => {
 
       console.log("API response:", res.data);
 
-     if (res.data.token && res.data.user) {
-  const { token, user } = res.data;
+      if (res.data.success && res.data.data) {
+  const { token, user } = res.data.data;
+
+  // lưu vào localStorage
   localStorage.setItem("token", token);
   localStorage.setItem("email", user.email);
   localStorage.setItem("userId", user.id);
@@ -40,10 +42,6 @@ const Login: React.FC = () => {
 } else {
   throw new Error("Đăng nhập thất bại!");
 }
-      alert("✅ Đăng nhập thành công!");
-
-      // 👉 Chuyển hướng sang trang Home
-      navigate("/home");
     } catch (error) {
       console.error("Login error:", error);
       alert("❌ Sai email hoặc mật khẩu!");
@@ -100,7 +98,7 @@ const Login: React.FC = () => {
             <label className="form-check-label" htmlFor="remember">
               Nhớ tài khoản
             </label>
-          </div>
+            </div>
 
           <button
             type="submit"
@@ -109,7 +107,9 @@ const Login: React.FC = () => {
           >
             {loading ? "Đang đăng nhập..." : "Đăng nhập"}
           </button>
-<div className="text-center text-muted mb-2">hoặc</div>
+
+          <div className="text-center text-muted mb-2">hoặc</div>
+
           <button type="button" className="btn btn-outline-primary w-100">
             Đăng nhập CodeGym ID
           </button>
