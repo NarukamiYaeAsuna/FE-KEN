@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";  // 👈 import để điều hướng
+import { useNavigate } from "react-router-dom";
 import "../styles/login.css";
 
 const Login: React.FC = () => {
@@ -9,7 +9,7 @@ const Login: React.FC = () => {
   const [remember, setRemember] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const navigate = useNavigate(); // 👈 khởi tạo navigate
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,28 +23,35 @@ const Login: React.FC = () => {
 
       console.log("API response:", res.data);
 
-      if (res.data.success && res.data.data) {
-  const { token, user } = res.data.data;
+      const { success, data, message } = res.data;
 
-  // lưu vào localStorage
-  localStorage.setItem("token", token);
-  localStorage.setItem("email", user.email);
-  localStorage.setItem("userId", user.id);
+      if (success && data?.token && data?.user) {
+        const { token, user } = data;
 
-  if (remember) {
-    localStorage.setItem("remember_email", email);
-  } else {
-    localStorage.removeItem("remember_email");
-  }
+        // Lưu thông tin đăng nhập vào localStorage
+        localStorage.setItem("token", token);
+        localStorage.setItem("email", user.email);
+        localStorage.setItem("userId", user.id);
 
-  alert("✅ Đăng nhập thành công!");
-  navigate("/home");
-} else {
-  throw new Error("Đăng nhập thất bại!");
-}
-    } catch (error) {
-      console.error("Login error:", error);
-      alert("❌ Sai email hoặc mật khẩu!");
+        if (remember) {
+          localStorage.setItem("remember_email", email);
+        } else {
+          localStorage.removeItem("remember_email");
+        }
+
+        alert("✅ Đăng nhập thành công!");
+        navigate("/home"); // Chuyển sang trang Home
+      } else {
+        console.error("Login failed:", message);
+        alert(`❌ Đăng nhập thất bại! ${message || ""}`);
+      }
+    } catch (error: any) {
+      console.error("Login error:", error.response?.data || error.message);
+      alert(
+        `❌ Sai email hoặc mật khẩu! ${
+          error.response?.data?.message || ""
+        }`
+      );
     } finally {
       setLoading(false);
     }
@@ -55,11 +62,7 @@ const Login: React.FC = () => {
       {/* Cột trái */}
       <div className="login-left">
         <div className="text-center">
-          <img
-            src="/codegymlogo.png"
-            alt="Logo"
-            className="login-logo"
-          />
+          <img src="/codegymlogo.png" alt="Logo" className="login-logo" />
         </div>
 
         <h4 className="text-center mb-4 fgg">Đăng nhập</h4>
@@ -98,7 +101,7 @@ const Login: React.FC = () => {
             <label className="form-check-label" htmlFor="remember">
               Nhớ tài khoản
             </label>
-            </div>
+          </div>
 
           <button
             type="submit"
@@ -110,7 +113,17 @@ const Login: React.FC = () => {
 
           <div className="text-center text-muted mb-2">hoặc</div>
 
-          <button type="button" className="btn btn-outline-primary w-100">
+          {/* Đăng nhập CodeGym ID */}
+          <button
+            type="button"
+            className="btn btn-outline-primary w-100"
+            onClick={() => {
+              const clientId = "codegym-ken-react-local"; // Client ID của CodeGym
+              const redirectUri = encodeURIComponent("http://localhost:3000/home"); // nơi redirect sau login
+              const authUrl = `https://id.dev.codegym.vn/auth/realms/codegym/protocol/openid-connect/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=openid`;
+              window.location.href = authUrl;
+            }}
+          >
             Đăng nhập CodeGym ID
           </button>
         </form>
