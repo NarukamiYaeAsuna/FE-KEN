@@ -1,24 +1,32 @@
-import React from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import React, { JSX, useContext } from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
+import { AuthProvider, AuthContext } from "./context/AuthContext";
+
+const PrivateRoute = ({ children }: { children: JSX.Element }) => {
+  const auth = useContext(AuthContext);
+  return auth?.token ? children : <Navigate to="/login" replace />;
+};
 
 function App() {
-  const token = localStorage.getItem("token");
-
   return (
-    <Router>
-      <Routes>
-        {/* nếu vào root "/" thì chuyển hướng dựa vào token */}
-        <Route path="/" element={token ? <Navigate to="/home" /> : <Navigate to="/login" />} />
-
-        {/* thêm route login */}
-        <Route path="/login" element={<Login />} />
-
-        {/* home chỉ vào được nếu có token */}
-        <Route path="/home" element={token ? <Home /> : <Navigate to="/login" />} />
-      </Routes>
-    </Router>
+    <BrowserRouter>
+      <AuthProvider>
+        <Routes>
+          <Route path="/" element={<Navigate to="/login" />} />
+          <Route path="/login" element={<Login />} />
+          <Route
+            path="/home"
+            element={
+              <PrivateRoute>
+                <Home />
+              </PrivateRoute>
+            }
+          />
+        </Routes>
+      </AuthProvider>
+    </BrowserRouter>
   );
 }
 
