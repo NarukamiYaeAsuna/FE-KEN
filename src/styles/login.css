@@ -1,0 +1,97 @@
+@font-face {
+    font-family: 'Samsung Sharp Sans Regular';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Samsung Sharp Sans Regular'), url('samsungsharpsans.woff') format('woff');
+    }
+    
+    
+    @font-face {
+    font-family: 'Samsung Sharp Sans Medium';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Samsung Sharp Sans Medium'), url('samsungsharpsans-medium.woff') format('woff');
+    }
+    
+    
+    @font-face {
+    font-family: 'Samsung Sharp Sans Bold';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Samsung Sharp Sans Bold'), url('samsungsharpsans-bold.woff') format('woff');
+    }
+    
+    @font-face {
+        font-family: 'Samsung Sharp Sans Bold VH';
+        font-style: normal;
+        font-weight: normal;
+        src: local('Samsung Sharp Sans Bold VH'), url('iCiel-SamsungSharpSans-Bold_SMCPS.ttf') format('truetype');
+    }
+    
+    @font-face {
+        font-family: 'Samsung Sharp Sans Regular OpenType';
+        font-style: normal;
+        font-weight: normal;
+        src: local('Samsung Sharp Sans Regular OpenType'), url('samsungsharpsans.otf') format('opentype');
+        }
+        
+    
+        @font-face {
+        font-family: 'Samsung Sharp Sans Medium OpenType';
+        font-style: normal;
+        font-weight: normal;
+        src: local('Samsung Sharp Sans Medium OpenType'), url('samsungsharpsans-medium.otf') format('opentype');
+        }
+        
+    
+        @font-face {
+        font-family: 'Samsung Sharp Sans Bold OpenType';
+        font-style: normal;
+        font-weight: normal;
+        src: local('Samsung Sharp Sans Bold OpenType'), url('samsungsharpsans-bold.otf') format('opentype');
+        }
+.login-page {
+  display: flex;
+  height: 100vh;
+  font-family: Arial, sans-serif;
+}
+
+/* Cột trái: chứa form */
+.login-left {
+  flex: 5;
+  background-color: #ffffff; /* tím nhạt */
+  display: flex;
+  flex-direction:column;
+  justify-content: space-evenly;
+  padding: 40px;
+}
+
+/* Card form */
+
+
+/* Logo */
+.login-logo {
+  max-width: 400px;
+  margin-bottom: 20px;
+}
+
+/* Cột phải: background xanh */
+.login-right {
+  flex: 7;
+  background: linear-gradient(to bottom, #2a6ec8, #003163);
+}
+.text-center mb-4{
+    font-size: 10px;
+}
+.fgg{
+    font-size: 15px;
+    font-family: 'Samsung Sharp Sans Bold VH';
+}
+.nput1{
+    box-shadow: 0 4px 5px rgb(90, 89, 89);
+    border: none;
+}
+.nput2{
+    box-shadow: 0 4px 5px rgb(90, 89, 89);
+    border: none;
+}
