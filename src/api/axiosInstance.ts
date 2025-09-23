@@ -1,16 +1,20 @@
 import axios from "axios";
 
-const axiosInstance = axios.create({
-  baseURL: "http://localhost:3005/api",
-});
-
-// Thêm token vào header trước mỗi request
-axiosInstance.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+export const exchangeCodeForToken = async (code: string) => {
+  try {
+    const res = await axios.post(
+      "https://id.dev.codegym.vn/auth/realms/codegym/protocol/openid-connect/token",
+      new URLSearchParams({
+        grant_type: "authorization_code",
+        code,
+        client_id: "codegym-ken-react-local",
+        redirect_uri: "http://localhost:3000/*"
+      }),
+      { headers: { "Content-Type": "application/x-www-form-urlencoded" }, withCredentials: true }
+    );
+    return res.data;
+  } catch (err: any) {
+    console.error("Exchange code Axios error:", err);
+    throw err;
   }
-  return config;
-});
-
-export default axiosInstance;
+};

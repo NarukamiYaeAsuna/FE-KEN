@@ -1,136 +1,82 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import "../styles/login.css";
+import { normalLogin, getSSOLoginUrl } from "../auth/authService";
 
 const Login: React.FC = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [remember, setRemember] = useState(false);
-  const [loading, setLoading] = useState(false);
 
-  const navigate = useNavigate();
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleNormalLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-
     try {
-      const res = await axios.post("http://localhost:3005/api/login", {
-        email,
-        password,
-      });
-
-      console.log("API response:", res.data);
-
-      const { success, data, message } = res.data;
-
-      if (success && data?.token && data?.user) {
-        const { token, user } = data;
-
-        localStorage.setItem("token", token);
-        localStorage.setItem("email", user.email);
-        localStorage.setItem("userId", user.id);
-
-        if (remember) {
-          localStorage.setItem("remember_email", email);
-        } else {
-          localStorage.removeItem("remember_email");
-        }
-
-        alert("✅ Đăng nhập thành công!");
-        navigate("/home"); // chuyển sang trang Home
-      } else {
-        // Backend trả về thất bại
-        console.error("Login failed:", message);
-        alert(`❌ Đăng nhập thất bại! ${message || ""}`);
-      }
-    } catch (error: any) {
-      // Nếu có lỗi từ server hoặc network
-      console.error("Login error:", error.response?.data || error.message);
-      alert(
-        `❌ Sai email hoặc mật khẩu! ${
-          error.response?.data?.message || ""
-        }`
-      );
-    } finally {
-      setLoading(false);
+      const res = await normalLogin(email, password);
+      if (res.success) navigate("/darboard");
+      else alert(res.message);
+    } catch {
+      alert("Lỗi đăng nhập thường");
     }
   };
 
+  const handleSSOLogin = () => {
+    window.location.href = getSSOLoginUrl();
+  };
+
   return (
-    <div className="login-page">
-      {/* Cột trái */}
-      <div className="login-left">
-        <div className="text-center">
-          <img src="/codegymlogo.png" alt="Logo" className="login-logo" />
-        </div>
+    <div className="container mt-5">
+      <div className="row shadow rounded" style={{ minHeight: "500px" }}>
+        {/* Left: Form */}
+        <div className="col-md-6 d-flex flex-column justify-content-center p-5 bg-light">
+          <h3 className="text-center mb-4">Đăng nhập</h3>
 
-        <h4 className="text-center mb-4 fgg">Đăng nhập</h4>
+          <form onSubmit={handleNormalLogin}>
+            <div className="mb-3">
+              <label>Email:</label>
+              <input
+                type="email"
+                className="form-control"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+            <div className="mb-3">
+              <label>Password:</label>
+              <input
+                type="password"
+                className="form-control"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
+            <button type="submit" className="btn btn-primary w-100 mb-3">
+              Đăng nhập thường
+            </button>
+          </form>
 
-        <form onSubmit={handleSubmit}>
-          <div className="mb-3">
-            <input
-              type="email"
-              className="form-control nput1"
-              placeholder="Tên người dùng / Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
-
-          <div className="mb-3">
-            <input
-              type="password"
-              className="form-control nput2"
-              placeholder="Mật khẩu"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
-
-          <div className="form-check mb-3">
-            <input
-              className="form-check-input"
-              type="checkbox"
-              id="remember"
-              checked={remember}
-              onChange={(e) => setRemember(e.target.checked)}
-            />
-            <label className="form-check-label" htmlFor="remember">
-              Nhớ tài khoản
-            </label>
-          </div>
+          <div className="text-center">Hoặc</div>
 
           <button
-            type="submit"
-            className="btn btn-primary w-100 mb-2"
-            disabled={loading}
+            onClick={handleSSOLogin}
+            className="btn btn-success w-100 mt-3"
           >
-            {loading ? "Đang đăng nhập..." : "Đăng nhập"}
+            Đăng nhập với ID CodeGym
           </button>
+        </div>
 
-          <div className="text-center text-muted mb-2">hoặc</div>
-      <button
-  type="button"
-  className="btn btn-outline-primary w-100"
-  onClick={() => {
-    const clientId = "codegym-ken-react-local"; // Client ID của CodeGym
-    const redirectUri = encodeURIComponent("http://localhost:3000/home"); // nơi redirect sau login
-    const authUrl = `https://id.dev.codegym.vn/auth/realms/codegym/protocol/openid-connect/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=openid`;
-    window.location.href = authUrl;
-  }}
->
-  Đăng nhập CodeGym ID
-</button>
-
-        </form>
+        {/* Right: Image */}
+        <div
+          className="col-md-6 d-none d-md-block"
+          style={{
+            backgroundImage: "url('//james.codegym.vn/pluginfile.php/1/theme_remui/logo/1737014283/Codegym%20X.png')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            borderTopRightRadius: "0.5rem",
+            borderBottomRightRadius: "0.5rem",
+          }}
+        ></div>
       </div>
-
-      {/* Cột phải */}
-      <div className="login-right"></div>
     </div>
   );
 };

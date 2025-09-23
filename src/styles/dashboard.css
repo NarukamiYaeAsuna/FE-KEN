@@ -1,0 +1,43 @@
+.dashboard-container {
+  display: flex;
+  min-height: 100vh;
+  background: #f0f2f5;
+}
+
+.sidebar {
+  width: 250px;
+  background: #3b3f5c;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.sidebar h2 {
+  margin-bottom: 30px;
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+.sidebar .nav {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar .nav-item {
+  padding: 12px 20px;
+  margin-bottom: 5px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background 0.3s;
+}
+
+.sidebar .nav-item:hover,
+.sidebar .nav-item.active {
+  background: #5c5f7a;
+}
+
+.main-content {
+  flex: 1;
+  padding: 40px;
+}
