@@ -19,7 +19,9 @@ const Login: React.FC = () => {
   };
 
   const handleSSOLogin = () => {
+
     window.location.href = getSSOLoginUrl();
+     navigate("/home");
   };
 
   return (

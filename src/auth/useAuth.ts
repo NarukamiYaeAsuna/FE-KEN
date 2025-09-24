@@ -40,14 +40,19 @@ export function useAuth() {
       if (code) {
         try {
           const res = await exchangeCodeForToken(code);
-          access = res.access_token;
-          localStorage.setItem("access_token", res.access_token);
-          localStorage.setItem("refresh_token", res.refresh_token);
-
+  if (res.access_token) {
+  localStorage.setItem("access_token", res.access_token);
+  localStorage.setItem("refresh_token", res.refresh_token);
+  localStorage.setItem("login_type", "SSO");
+   setToken(res.refresh_token);
+   console.error("ở user token");
+   } else {
+          console.error("Exchange code failed, không lưu token");
+      }
           // Xóa ?code=... trên URL
           window.history.replaceState({}, document.title, keycloakConfig.redirectUri);
 
-          setToken(access);
+          
           setMessage("Đăng nhập thành công 🎉");
           navigate("/home"); // 🔹 điều hướng tới trang Home khi login thành công
           return;
